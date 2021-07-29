@@ -1,18 +1,19 @@
 import React, { Component, ComponentType, ReactElement } from "react";
 import { Route, Redirect, RouteComponentProps } from "react-router-dom";
-import { getToken } from "../../utils/auth";
+import { isAuthenticated } from "../../utils/auth";
 
-interface Props {
+interface Props extends Partial<RouteComponentProps> {
   path: string;
   component: ComponentType<RouteComponentProps<any>> | ComponentType<any>;
 }
 
 const RedirectRoute: React.FC<Props> = ({ component: Component, ...rest }) => {
+  console.log(isAuthenticated(rest.location?.pathname));
   return (
     <Route
       {...rest}
       render={(props) =>
-        getToken() ? (
+        isAuthenticated(rest.location?.pathname) ? (
           <Component {...props} />
         ) : (
           <Redirect
