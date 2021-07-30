@@ -1,8 +1,8 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
 import { SIGN_TYPE } from "../../constants";
-import { login } from "../../api/signin";
-
+import { getData, login, loginReq } from "../../api/signin";
+console.log(loginReq);
 interface Props {
   type: number;
 }
@@ -13,9 +13,13 @@ interface IValues {
 }
 
 export const SignInForm: React.FC<Props> = ({ type }) => {
-  const onFinish = (values: IValues) => {
+  const onFinish = async (values: IValues) => {
     if (type === SIGN_TYPE.LOGIN) {
-      login(values);
+      getData({ dashboard_id: "26418d61-087f-4a6a-ace5-528ec0ed115b" });
+      setTimeout(() => {
+        loginReq(values);
+      }, 1000);
+    } else {
     }
   };
   return (
