@@ -2,6 +2,8 @@ import React from "react";
 import { Form, Input, Button } from "antd";
 import { SIGN_TYPE } from "../../constants";
 import { getData, login, loginReq } from "../../api/signin";
+import { setToken } from "../../utils/auth";
+import { useHistory } from "react-router-dom";
 console.log(loginReq);
 interface Props {
   type: number;
@@ -13,12 +15,13 @@ interface IValues {
 }
 
 export const SignInForm: React.FC<Props> = ({ type }) => {
+  const history = useHistory();
   const onFinish = async (values: IValues) => {
     if (type === SIGN_TYPE.LOGIN) {
-      getData({ dashboard_id: "26418d61-087f-4a6a-ace5-528ec0ed115b" });
-      setTimeout(() => {
-        loginReq(values);
-      }, 1000);
+      //   const { data } = await loginReq(values);
+      //   setToken(data.token);
+      //   login;
+      history.push("/");
     } else {
     }
   };

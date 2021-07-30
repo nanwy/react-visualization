@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import { message, Button } from "antd";
 
 import { SERVER } from "../constants";
+import { getToken } from "../utils/auth";
 
 const TIME_OUT = 5000;
 const createInstance = () => {
@@ -11,33 +12,28 @@ const createInstance = () => {
     timeout: TIME_OUT,
   });
   //   const loading = new Loading();
-  interceptors(instance);
+  instance.interceptors.request.use(
+    (config) => {
+      if (getToken()) {
+        config.headers.Authorization = `Bearer ${getToken()}`;
+      }
+      return config;
+    },
+    (err) => {}
+  );
+  instance.interceptors.response.use(
+    (config) => {
+      return config;
+    },
+    (err) => {
+      return Promise.reject(err);
+    }
+  );
   return instance;
-};
-
-class Loading {
-  loading: any;
-  constructor() {
-    this.loading = "";
-  }
-  setLoading() {
-    this.loading = message.loading("请稍后", 0);
-  }
-  closeLoading() {
-    // Promise.resolve().then(this.loading);
-    console.log("关闭");
-    setTimeout(this.loading, 0);
-  }
-}
-const handleRequest = (loading: any) => {
-  message.loading("请稍后", 0);
-  // Dismiss manually and asynchronously
-  setTimeout(loading, 2500);
 };
 
 const interceptors = (instance: Instance) => {
   let hide: any;
-  console.log("加载");
   instance.interceptors.request.use(
     (config) => {
       //   loading.setLoading();

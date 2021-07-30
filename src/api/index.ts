@@ -12,7 +12,7 @@ const request = async (url: string, params: any, method: Method = "get") => {
     ...args,
   });
   message.destroy(url);
-  return res;
+  return res.data;
 };
 
 const get = async (url: string, params: any) => {
@@ -34,11 +34,11 @@ const post = async (url: string, data: any) => {
     data,
   });
   message.destroy(url);
-  return res;
+  return res.data;
 };
 
 export const makeRequest = (url: string, method?: Method) => {
-  return async (params: any) => {
+  return async (params?: any) => {
     console.log(method, "me");
     // if (method === "post") {
     //   return request(url, params,method);

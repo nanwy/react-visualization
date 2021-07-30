@@ -20,3 +20,5 @@ export const loginReq = makeRequest("/api/user/login", "post");
 // };
 
 export const getData = makeRequest("/api/dashboard/chartbydashboard");
+
+export const getUser = makeRequest("/api/user/info");

@@ -8,7 +8,8 @@ interface Props extends Partial<RouteComponentProps> {
 }
 
 const RedirectRoute: React.FC<Props> = ({ component: Component, ...rest }) => {
-  console.log(isAuthenticated(rest.location?.pathname));
+  console.log(isAuthenticated(rest.location?.pathname) ? 1 : 0);
+
   return (
     <Route
       {...rest}
