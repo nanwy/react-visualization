@@ -6,6 +6,7 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 import { useAuth } from "../../context/auth/auth-context";
+import { Link } from "react-router-dom";
 
 const { SubMenu } = Menu;
 
@@ -16,10 +17,10 @@ const HeaderNav = () => {
     <div>
       <Menu mode="horizontal">
         <Menu.Item key="mail" icon={<MailOutlined />}>
-          Navigation One
+          <Link to="/dashboard">画板</Link>
         </Menu.Item>
         <Menu.Item key="app" disabled icon={<AppstoreOutlined />}>
-          Navigation Two
+          <Link to="/dashboard"></Link>
         </Menu.Item>
         <Menu.Item key="alipay">
           <a

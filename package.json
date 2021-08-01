@@ -19,6 +19,7 @@
     "react-dom": "^17.0.2",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "react-split-pane": "^0.1.92",
     "typescript": "^4.3.5",
     "web-vitals": "^1.1.2"
   },
@@ -50,5 +51,5 @@
     "@types/js-cookie": "^2.2.7",
     "@types/react-router-dom": "^5.1.8"
   },
-  "proxy":"http://123.57.219.169:3003/"
+  "proxy": "http://123.57.219.169:3003/"
 }
