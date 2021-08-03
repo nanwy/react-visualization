@@ -1,12 +1,13 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import SplitPane from "react-split-pane";
+import RenderComponent from "../../components/RanderComponent";
 
 interface LayoutData {
   split?: "vertical" | "horizontal" | undefined;
   props?: {
     minSize: number;
   };
-  chart?: ReactElement;
+  chart?: string;
   children?: LayoutData[];
   id?: number;
 }
@@ -106,34 +107,35 @@ const Dashboard = () => {
           if (isdrag(beginX, beginY, endX, endY)) return;
           console.log(e, data, "data", split, before, index, data.children);
           e.stopPropagation();
-          if (data.children?.length) {
-            let arr = [...data.children];
-            // let index = arr.indexOf(e);
-            data.children[index || 0] = {
-              split: position[+(width > height)],
-              id: (id += 1),
-              children: [
-                { chart: data.chart },
-                { chart: renderChart(+before || 0) },
-              ],
-            };
-            delete data.chart;
-
-            // data.children = data.children.map((item) => {
-            //   return {
-            //     split: position[Math.floor(Math.random() + 1)],
-            //     children: [{ ...item }],
-            //   };
-            // });
+          if (!data.chart) {
+            data.chart = "menu";
           } else {
-            data.children = [
-              { chart: data.chart, children: [] },
-              { chart: data.chart, children: [] },
-            ];
-            data.split = position[+(width < height)];
-            data.id = id += 1;
-            delete data.chart;
-            console.log(data, "else");
+            if (data.children?.length) {
+              let arr = [...data.children];
+              // let index = arr.indexOf(e);
+              data.children[index || 0] = {
+                split: position[+(width > height)],
+                id: (id += 1),
+                children: [{ chart: data.chart }, { chart: "menu" }],
+              };
+              delete data.chart;
+
+              // data.children = data.children.map((item) => {
+              //   return {
+              //     split: position[Math.floor(Math.random() + 1)],
+              //     children: [{ ...item }],
+              //   };
+              // });
+            } else {
+              data.children = [
+                { chart: data.chart, children: [] },
+                { chart: "menu", children: [] },
+              ];
+              data.split = position[+(width < height)];
+              data.id = id += 1;
+              delete data.chart;
+              console.log(data, "else");
+            }
           }
           setPosData({ ...posData });
           //   if (data.children?.length) {
@@ -190,7 +192,7 @@ const Dashboard = () => {
               })}
             </SplitPane>
           ) : (
-            <div>{chart}</div>
+            <div>{RenderComponent({ type: chart || "default" })}</div>
           )
 
           //   <SplitPane split={split}>
