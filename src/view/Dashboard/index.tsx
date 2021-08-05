@@ -136,7 +136,7 @@ const Dashboard = () => {
             } else {
               data.children = [
                 { chart: data.chart, children: [] },
-                { chart: "default", children: [] },
+                { chart: "pieChart", children: [] },
               ];
               data.split = position[+(width < height)];
               data.id = id += 1;
@@ -172,14 +172,18 @@ const Dashboard = () => {
           !!children?.length && split ? (
             <SplitPane
               split={split}
+              primary="second"
+              paneStyle={{ minWidth: "200px" }}
+              minSize={200}
               defaultSize={
                 parseInt(
                   JSON.parse(localStorage.getItem("splitPos") || "{}")[before],
                   10
                 ) || "50%"
               }
+              onDragStarted={() => {}}
               onResizerClick={(e) => {
-                console.log("缩放");
+                console.log("缩放", e);
                 e.stopPropagation();
               }}
               onDragFinished={(e) => {
@@ -187,7 +191,6 @@ const Dashboard = () => {
               }}
               //   defaultSize={"50%"}
               onChange={(size) => {
-                console.log(map);
                 map[before] = size;
                 localStorage.setItem("splitPos", JSON.stringify(map));
               }}
@@ -200,9 +203,9 @@ const Dashboard = () => {
             </SplitPane>
           ) : (
             // <div>{RenderComponent({ type: chart || "default" })}</div>
-            <div>
-              <RenderComponent type={chart || "default"} data="data" />
-            </div>
+            // <div style={{ width: "100%", height: "100%" }}>
+            <RenderComponent type={chart || "default"} data="data" />
+            // </div>
           )
 
           //   <SplitPane split={split}>

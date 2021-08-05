@@ -18,6 +18,7 @@ import "./App.scss";
 import HeaderNav from "./components/Menu";
 import PublicRoute from "./components/PublicRoute/PublicRoute";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+import { AuthProvider } from "./context/auth/auth-context";
 
 function App() {
   // const { user } = useAuth();
@@ -26,32 +27,34 @@ function App() {
   return (
     <div className="App">
       {/* <header className="App-header"></header> */}
-      <Providers>
-        {/* <BrowserRouter> */}
-        {/* <AuthProvider> */}
-        <Suspense fallback={null}>
-          <HeaderNav />
-          <Switch>
-            <PublicRoute exact path={ROUTES.LOGIN}>
-              <SignIn />
-            </PublicRoute>
-            <PrivateRoute exact path={"/"}>
-              <HomePage />
-            </PrivateRoute>
-            <PrivateRoute exact path={ROUTES.DASHBOARD}>
-              <Dashboard />
-            </PrivateRoute>
-            <Redirect to={ROUTES.LOGIN} />
+      {/* <Providers> */}
+      <AuthProvider>
+        <BrowserRouter>
+          {/* <AuthProvider> */}
+          <Suspense fallback={null}>
+            <HeaderNav />
+            <Switch>
+              <PublicRoute exact path={ROUTES.LOGIN}>
+                <SignIn />
+              </PublicRoute>
+              <PrivateRoute exact path={"/"}>
+                <HomePage />
+              </PrivateRoute>
+              <PrivateRoute exact path={ROUTES.DASHBOARD}>
+                <Dashboard />
+              </PrivateRoute>
+              <Redirect to={ROUTES.LOGIN} />
 
-            {/* <Route path={ROUTES.LOGIN} component={SignIn} /> */}
-            {/* <Route path={ROUTES.DASHBOARD} component={Dashboard} /> */}
+              {/* <Route path={ROUTES.LOGIN} component={SignIn} /> */}
+              {/* <Route path={ROUTES.DASHBOARD} component={Dashboard} /> */}
 
-            {/* <RedirectRoute path={ROUTES.ROOT} component={HomePage} /> */}
-          </Switch>
-        </Suspense>
-        {/* </AuthProvider>
-        {/* </BrowserRouter> */}
-      </Providers>
+              {/* <RedirectRoute path={ROUTES.ROOT} component={HomePage} /> */}
+            </Switch>
+          </Suspense>
+        </BrowserRouter>
+      </AuthProvider>
+      {/* </AuthProvider>
+      {/* </Providers> */}
     </div>
   );
 }

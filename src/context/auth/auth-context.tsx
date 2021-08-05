@@ -15,36 +15,40 @@ const useMount = (callback: () => void) => {
 };
 
 const initialUser = async () => {
-  const data = await getUser();
+  let user = null;
+  const { data } = await getUser();
   console.log(data, "data");
-  return data.userinfo;
+  user = data.userinfo;
+  return user;
 };
 
 const AuthContext = React.createContext<
   | {
-      user: UserInfo | undefined;
-      login?: (params: AuthForm) => Promise<void>;
+      user: UserInfo | undefined | null;
+      login: (params: AuthForm) => Promise<void>;
     }
   | undefined
 >(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // getUser();
-  // const {
-  //   data: user,
-  //   error,
-  //   isLoading,
-  //   isIdle,
-  //   isError,
-  //   run,
-  //   setData: setUser,
-  // } = useAsync<UserInfo | null>();
-  const [state, setState] = useAsyncFn(getUser);
-  const { value: user, loading } = state;
+  const {
+    data: user,
+    error,
+    isLoading,
+    isIdle,
+    isError,
+    run,
+    setData: setUser,
+  } = useAsync<UserInfo | null>();
+  // const [state, setState] = useAsyncFn(getUser);
+  // const { value: user, loading } = state;
   // const [user, setUser] = useState<UserInfo>();
+  const login = (form: AuthForm) => auth.useLogin(form).then(setUser);
+
   useMount(() => {
-    // run(initialUser());
-    setState();
+    run(initialUser());
+    // setState();
     // initialUser().then((res) => {
     //   setUser(res);
     // });
@@ -55,10 +59,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // });
   // initialUser();
   // const user = { id: 1, username: "lll" };
+  if (isIdle || isLoading) {
+    return <div>loading</div>;
+  }
   console.log(user);
-  return !loading ? (
-    <AuthContext.Provider children={children} value={{ user: user }} />
-  ) : (
-    <div>loading</div>
+  return (
+    <AuthContext.Provider children={children} value={{ user: user, login }} />
   );
+};
+
+export const useAuth = () => {
+  const context = React.useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth必须在AuthProvider中使用");
+  }
+  return context;
 };

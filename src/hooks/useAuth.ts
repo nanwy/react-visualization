@@ -65,7 +65,10 @@ export const useRequest = () => {
   const isLoading = [loginStatus, myInfoStatus, signupStatus].some(
     (status) => status === "loading"
   );
-
+  console.log(
+    [loginStatus, myInfoStatus, signupStatus],
+    "[loginStatus, myInfoStatus, signupStatus]"
+  );
   const isError = [loginStatus, myInfoStatus, signupStatus].some(
     (status) => status === "failed"
   );
@@ -158,10 +161,12 @@ export const useAuthProvider = () => {
 
   useEffect(() => {
     console.log(getToken());
-    if (getToken()) {
-      fetchMyInfo().then(unwrapResult).then(authenticate).catch(logout);
+    if (!getToken()) {
+      fetchMyInfo().then(unwrapResult).then(authenticate);
     } else {
+      done();
       unauthenticate();
+      // fetchMyInfo().then(unwrapResult).then(unauthenticate);
     }
   }, [authenticate, fetchMyInfo, logout]);
 

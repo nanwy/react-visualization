@@ -43,6 +43,9 @@ const interceptors = (instance: Instance) => {
     (config) => {
       //   loading.setLoading();
       console.log(config);
+      if (getToken()) {
+        config.headers.Authorization = `Bearer ${getToken()}`;
+      }
       //   hide = message.loading({content:'请稍后',key:config});
       return config;
     },

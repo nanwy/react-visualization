@@ -16,7 +16,12 @@ const FullPageLoading = () => (
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const auth = useAuthProvider();
   console.log(auth);
-  if (auth.isLoading) {
+  if (
+    auth.isIdle ||
+    auth.isLoading ||
+    auth.isSucceed ||
+    !auth.isAuthenticated
+  ) {
     return <FullPageLoading />;
   }
   // useEffect(() => {

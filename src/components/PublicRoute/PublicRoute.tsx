@@ -1,11 +1,12 @@
 import { Redirect, Route } from "react-router-dom";
 import React, { ComponentProps } from "react";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../context/auth/auth-context";
+// import { useAuth } from "../../hooks/useAuth";
 // import { PATH } from "../../constants";
 
 const PublicRoute = ({ children, ...rest }: ComponentProps<typeof Route>) => {
-  const { isAuthenticated } = useAuth();
-
+  const { user: isAuthenticated } = useAuth();
+  console.log(isAuthenticated);
   return (
     <Route
       {...rest}

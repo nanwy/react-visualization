@@ -14,7 +14,7 @@ import { useAuth } from "../hooks/useAuth";
 
 const HomePage = () => {
   const history = useHistory();
-  const { myInfo } = useAuth();
+  // const { myInfo } = useAuth();
   return (
     <div className="home-container">
       <img src={Logo} />
@@ -34,24 +34,24 @@ const HomePage = () => {
   //       <Route path={ROUTES.DASHBOARD} component={Dashboard} />
   //     </Switch>
   //   );
-  return !myInfo?.userinfo?.username ? (
-    <div className="home-container">
-      <img src={Logo} />
-      <div className="home-title">react打造的数据可视化分析</div>
-      <Button
-        type="primary"
-        size="large"
-        onClick={() => history.push("/dashboard")}
-      >
-        开始
-      </Button>
-    </div>
-  ) : (
-    <Switch>
-      {/* <Route path={ROUTES.LOGIN} component={SignIn} /> */}
-      <Route path={ROUTES.DASHBOARD} component={Dashboard} />
-    </Switch>
-  );
+  // return !myInfo?.userinfo?.username ? (
+  //   <div className="home-container">
+  //     <img src={Logo} />
+  //     <div className="home-title">react打造的数据可视化分析</div>
+  //     <Button
+  //       type="primary"
+  //       size="large"
+  //       onClick={() => history.push("/dashboard")}
+  //     >
+  //       开始
+  //     </Button>
+  //   </div>
+  // ) : (
+  //   <Switch>
+  //     {/* <Route path={ROUTES.LOGIN} component={SignIn} /> */}
+  //     <Route path={ROUTES.DASHBOARD} component={Dashboard} />
+  //   </Switch>
+  // );
 };
 
 export default HomePage;

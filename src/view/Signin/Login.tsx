@@ -5,8 +5,8 @@ import { useHistory } from "react-router-dom";
 import { SIGN_TYPE } from "../../constants";
 import { getData, loginReq } from "../../api/signin";
 import { setToken } from "../../utils/auth";
-import { useAuth } from "../../hooks/useAuth";
-// import { useAuth } from "../../context/auth/auth-context";
+// import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../context/auth/auth-context";
 
 interface Props {
   type: number;
@@ -20,15 +20,13 @@ interface IValues {
 export const SignInForm: React.FC<Props> = ({ type }) => {
   const history = useHistory();
   //   const { login } = useAuth();
-  const { login, isLoading, isError, done } = useAuth();
+  const { login } = useAuth();
 
   const onFinish = async (values: IValues) => {
     if (type === SIGN_TYPE.LOGIN) {
-      //   const { data } = await loginReq(values);
-      //   setToken(data.token);
-      //   login(values);
       login(values);
       history.push("/");
+      console.log("登陆成功");
     } else {
     }
   };

@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 import { AxiosError } from "axios";
 import { getData } from "../api/axios";
+import { message } from "antd";
 import {
   APICallState,
   APIResponse,
@@ -29,7 +30,7 @@ const useFetch = <T = never, U = void>(
     async (body: U) => {
       try {
         setState((prev) => ({ ...prev, status: "loading" }));
-
+        message.loading({ content: "请稍后", key: url });
         const data = await getData<T, U>(url, {
           body,
           method,
@@ -37,12 +38,14 @@ const useFetch = <T = never, U = void>(
         });
 
         setState((prev) => ({ ...prev, status: "succeed", data, error: null }));
+        message.destroy(url);
 
         return { data, error: null };
       } catch (err) {
         const error = err as AxiosError;
 
         setState((prev) => ({ ...prev, status: "failed", error, data: null }));
+        message.destroy(url);
 
         return { data: null, error };
       }
