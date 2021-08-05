@@ -1,5 +1,8 @@
+import { useAsync } from "./../utils/use-async";
 import { makeRequest } from "./index";
 import axios from "./axios";
+import useAsyncFn from "../hooks/useAsyncFn";
+import { useFetch } from "../hooks";
 
 export const login = async (data: any) => {
   const response = await axios({
@@ -19,6 +22,20 @@ export const loginReq = makeRequest("/api/user/login", "post");
 //   return response;
 // };
 
+export const getUser = async () => {
+  const response = await axios({
+    url: "/api/user/info",
+  });
+  return response;
+};
+
 export const getData = makeRequest("/api/dashboard/chartbydashboard");
 
-export const getUser = makeRequest("/api/user/info");
+// export const getUser = makeRequest("/api/user/info");
+
+export const useGetUser = () =>
+  useFetch<any>("/api/user/info", { method: "get" });
+export const useLogin = () =>
+  useFetch<any, any>("/api/user/login", { method: "post" });
+export const useSignup = () =>
+  useFetch<any, any>("/api/user/create", { method: "post" });

@@ -1,13 +1,15 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import SplitPane from "react-split-pane";
-import RenderComponent from "../../components/RanderComponent";
+import RenderComponent, {
+  ComponentTypes,
+} from "../../components/RanderComponent";
 
 interface LayoutData {
   split?: "vertical" | "horizontal" | undefined;
   props?: {
     minSize: number;
   };
-  chart?: string;
+  chart?: keyof ComponentTypes;
   children?: LayoutData[];
   id?: number;
 }
@@ -83,7 +85,12 @@ const Dashboard = () => {
   var id = 0;
   const [posData, setPosData] = useState(objData);
   const [canClick, setCanClick] = useState(true);
-  useEffect(() => {}, [objData]);
+  useEffect(() => {
+    console.log("变化");
+    return () => {
+      console.log("卸载");
+    };
+  }, [posData]);
   const map: any = JSON.parse(localStorage.getItem("splitPos") || "{}");
   console.log(objData);
   const createLayout = (data: LayoutData, arr: number[], index?: number) => {
@@ -116,7 +123,7 @@ const Dashboard = () => {
               data.children[index || 0] = {
                 split: position[+(width > height)],
                 id: (id += 1),
-                children: [{ chart: data.chart }, { chart: "menu" }],
+                children: [{ chart: data.chart }, { chart: "default" }],
               };
               delete data.chart;
 
@@ -129,7 +136,7 @@ const Dashboard = () => {
             } else {
               data.children = [
                 { chart: data.chart, children: [] },
-                { chart: "menu", children: [] },
+                { chart: "default", children: [] },
               ];
               data.split = position[+(width < height)];
               data.id = id += 1;
@@ -192,7 +199,10 @@ const Dashboard = () => {
               })}
             </SplitPane>
           ) : (
-            <div>{RenderComponent({ type: chart || "default" })}</div>
+            // <div>{RenderComponent({ type: chart || "default" })}</div>
+            <div>
+              <RenderComponent type={chart || "default"} data="data" />
+            </div>
           )
 
           //   <SplitPane split={split}>

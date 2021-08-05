@@ -1,10 +1,13 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
-import { SIGN_TYPE } from "../../constants";
-import { getData, login, loginReq } from "../../api/signin";
-import { setToken } from "../../utils/auth";
 import { useHistory } from "react-router-dom";
-console.log(loginReq);
+
+import { SIGN_TYPE } from "../../constants";
+import { getData, loginReq } from "../../api/signin";
+import { setToken } from "../../utils/auth";
+import { useAuth } from "../../hooks/useAuth";
+// import { useAuth } from "../../context/auth/auth-context";
+
 interface Props {
   type: number;
 }
@@ -16,11 +19,15 @@ interface IValues {
 
 export const SignInForm: React.FC<Props> = ({ type }) => {
   const history = useHistory();
+  //   const { login } = useAuth();
+  const { login, isLoading, isError, done } = useAuth();
+
   const onFinish = async (values: IValues) => {
     if (type === SIGN_TYPE.LOGIN) {
       //   const { data } = await loginReq(values);
       //   setToken(data.token);
-      //   login;
+      //   login(values);
+      login(values);
       history.push("/");
     } else {
     }

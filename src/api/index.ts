@@ -38,7 +38,7 @@ const post = async (url: string, data: any) => {
 };
 
 export const makeRequest = (url: string, method?: Method) => {
-  return async (params?: any) => {
+  return (params?: any) => {
     console.log(method, "me");
     // if (method === "post") {
     //   return request(url, params,method);

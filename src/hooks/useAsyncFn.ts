@@ -75,7 +75,7 @@ export default function useAsyncFn<Result = any, Args extends any[] = any[]>(
         return null;
       }
     );
-  }, deps);
+  }, []);
 
   return [state, callback];
 }

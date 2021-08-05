@@ -1,6 +1,7 @@
 import React from "react";
 
-const DefaultComponent = () => {
+const DefaultComponent = (props: any) => {
+  console.log(props);
   return <div>请添加图表</div>;
 };
 

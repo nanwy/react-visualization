@@ -7,9 +7,9 @@ import "@/assets/css/normalize.css";
 import App from "./App";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  // <AuthProvider>
+  <App />,
+  // </AuthProvider>,
   document.getElementById("root")
 );
 
