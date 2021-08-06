@@ -1,269 +1,166 @@
-import React, { ReactElement, useEffect, useState } from "react";
-import SplitPane from "react-split-pane";
-import RenderComponent, {
-  ComponentTypes,
-} from "../../components/RanderComponent";
+import React from "react";
 
-interface LayoutData {
-  split?: "vertical" | "horizontal" | undefined;
-  props?: {
-    minSize: number;
+import "react-reflex/styles.css";
+
+// then you can import the components
+import { ReflexContainer, ReflexSplitter, ReflexElement } from "react-reflex";
+import RenderComponent from "../../components/RanderComponent";
+
+const DashBoard = () => {
+  const onResize = (instance: any) => {
+    instance.resize();
   };
-  chart?: keyof ComponentTypes;
-  children?: LayoutData[];
-  id?: number;
-}
+  const objData = {
+    split: "vertical",
+    children: [
+      {
+        split: "vertical",
+        children: [
+          {
+            split: "horizontal",
+            children: [
+              {
+                chart: "default",
+              },
+              {
+                chart: "default",
+              },
+            ],
+          },
+          {
+            split: "",
+          },
+        ],
+      },
+      {
+        split: "",
+      },
+    ],
+  };
+  const FragWorkAround = (elements: any[]) =>
+    elements.reduce(
+      (acc: any, child: any, idx: any) =>
+        idx > 0
+          ? [
+              ...[...acc, <ReflexSplitter key={idx + "S"} />],
+              <ReflexElement key={idx + "E"}>
+                {renderLayout(child)}
+              </ReflexElement>,
+            ]
+          : [
+              ...acc,
+              <ReflexElement key={idx + "E"}>
+                {renderLayout(child)}
+              </ReflexElement>,
+            ],
+      []
+    );
 
-const position: ["vertical", "horizontal"] = ["vertical", "horizontal"];
+  const renderChildren = (data: any) => {
+    const children: any = [];
 
-function isdrag(x1: number, y1: number, x2: number, y2: number) {
-  if (Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) <= 1) {
-    return false;
-  }
-  return true;
-}
+    data.forEach((child: any, idx: any) => {
+      children.push(
+        <ReflexElement key={"re-" + idx}>
+          {renderLayout(child)}
+          {/* <div className="handle">{renderLayout(child)}</div> */}
+        </ReflexElement>
+      );
 
-const Dashboard = () => {
-  let beginX: number, // 起始位置
-    beginY: number,
-    endX: number, // 结束位置
-    endY: number;
-  const data = [
-    "vertical",
-    ["horizontal", ["vertical", ["horizontal", "vertical"]]],
-  ];
-  const renderChart = (index: number): ReactElement => {
-    return <span>{index}</span>;
+      // dont render last splitter
+      if (idx < data.length - 1) {
+        children.push(<ReflexSplitter key={"rs-" + idx} />);
+      }
+    });
+
+    return children;
   };
 
-  const objData: LayoutData = JSON.parse(
-    localStorage.getItem("objData") || "{}"
-  ) || {
-    chart: renderChart(1),
-
-    // split: "vertical",
-    // props: {
-    //   minSize: 50,
-    // },
-    // children: [
-    //   //   { chart: renderChart(1) },
-    //   {
-    //     split: "horizontal",
-    //     children: [
-    //       {
-    //         split: "horizontal",
-    //         children: [
-    //           {
-    //             chart: renderChart(1),
-    //           },
-    //           {
-    //             chart: renderChart(1.1),
-    //           },
-    //         ],
-    //       },
-    //       {
-    //         split: "horizontal",
-    //         children: [
-    //           {
-    //             chart: renderChart(1),
-    //           },
-    //           {
-    //             chart: renderChart(1.1),
-    //           },
-    //         ],
-    //       },
-    //     ],
-    //   },
-    //   //   { chart: renderChart(2) },
-    //   {
-    //     split: "vertical",
-    //     // chart: renderChart(2),
-    //     children: [{ chart: renderChart(3) }, { chart: renderChart(4) }],
-    //   },
-    // ],
-  };
-  var id = 0;
-  const [posData, setPosData] = useState(objData);
-  const [canClick, setCanClick] = useState(true);
-  useEffect(() => {
-    console.log("变化");
-    return () => {
-      console.log("卸载");
-    };
-  }, [posData]);
-  const map: any = JSON.parse(localStorage.getItem("splitPos") || "{}");
-  console.log(objData);
-  const createLayout = (data: LayoutData, arr: number[], index?: number) => {
+  const renderLayout = (data: any) => {
     const { split, children, chart } = data;
-    let before = arr.length ? `${arr.join(".")}\\` : "";
-    return (
-      <div
-        key={index}
-        style={{ width: "100%", height: "100%", position: "relative" }}
-        onMouseUp={(e) => {
-          beginX = e.clientX;
-          beginY = e.clientY;
-        }}
-        onMouseDown={(e) => {
-          endX = e.clientX;
-          endY = e.clientY;
-        }}
-        onClick={(e) => {
-          console.log(isdrag(beginX, beginY, endX, endY));
-          const { width, height } = e.currentTarget.getBoundingClientRect();
-          if (isdrag(beginX, beginY, endX, endY)) return;
-          console.log(e, data, "data", split, before, index, data.children);
-          e.stopPropagation();
-          if (!data.chart) {
-            data.chart = "menu";
-          } else {
-            if (data.children?.length) {
-              let arr = [...data.children];
-              // let index = arr.indexOf(e);
-              data.children[index || 0] = {
-                split: position[+(width > height)],
-                id: (id += 1),
-                children: [{ chart: data.chart }, { chart: "default" }],
-              };
-              delete data.chart;
+    return !!children?.length && split ? (
+      <ReflexContainer orientation={split}>
+        {FragWorkAround(children)}
+        {/* {children?.map((child: any, index: number) => {
+          // let temp = [...arr];
+          // temp.push(index + 1);
+          return (
+            <>
+              <ReflexElement
+                propagateDimensionsRate={200}
+                propagateDimensions={true}
+                flex={0.8}
+                className={split}
+              >
+              </ReflexElement>
+              {index !== children.length && <ReflexSplitter />}
+              <ReflexElement
+                propagateDimensionsRate={200}
+                propagateDimensions={true}
+                flex={0.8}
+                className={split}
+              >
+              </ReflexElement>
+            </>
+          );
+        })} */}
+        {/* <ReflexSplitter />
 
-              // data.children = data.children.map((item) => {
-              //   return {
-              //     split: position[Math.floor(Math.random() + 1)],
-              //     children: [{ ...item }],
-              //   };
-              // });
-            } else {
-              data.children = [
-                { chart: data.chart, children: [] },
-                { chart: "pieChart", children: [] },
-              ];
-              data.split = position[+(width < height)];
-              data.id = id += 1;
-              delete data.chart;
-              console.log(data, "else");
-            }
-          }
-          setPosData({ ...posData });
-          //   if (data.children?.length) {
-          //     data.children = data.children.map((item) => {
-          //       return {
-          //         split: position[Math.floor(Math.random() + 1)],
-          //         children: [{ ...item }],
-          //       };
-          //     });
-          //     setPosData({ ...posData });
-          //   } else {
-          //     data.children?.push(
-          //       {
-          //         chart: renderChart(+before),
-          //       },
-          //       {
-          //         chart: renderChart(+before),
-          //       }
-          //     );
-          //     setPosData({ ...posData });
-          //   }
-          localStorage.setItem("objData", JSON.stringify(posData));
-          console.log(posData);
-        }}
-      >
-        {
-          !!children?.length && split ? (
-            <SplitPane
-              split={split}
-              primary="second"
-              paneStyle={{ minWidth: "200px" }}
-              minSize={200}
-              defaultSize={
-                parseInt(
-                  JSON.parse(localStorage.getItem("splitPos") || "{}")[before],
-                  10
-                ) || "50%"
-              }
-              onDragStarted={() => {}}
-              onResizerClick={(e) => {
-                console.log("缩放", e);
-                e.stopPropagation();
-              }}
-              onDragFinished={(e) => {
+        <ReflexElement className="bottom-pane">
+          <div className="pane-content">
+            <label>Bottom Pane</label>
+          </div>
+        </ReflexElement> */}
+      </ReflexContainer>
+    ) : (
+      <RenderComponent
+        onResize={(e) => console.log("object")}
+        type={chart || "default"}
+        data="data"
+      />
+    );
+  };
+  return (
+    <div className="dashboard-container">
+      {/* <ReflexContainer orientation="horizontal">
+        {renderChildren([{ name: "child1" }, { name: "child2" }])}
+      </ReflexContainer> */}
+      {renderLayout(objData)}
+      {/* <ReflexContainer orientation="vertical">
+        <ReflexElement>
+          <ReflexContainer orientation="horizontal">
+            <ReflexElement
+              propagateDimensionsRate={200}
+              propagateDimensions={true}
+              flex={0.8}
+              onResize={(e) => {
                 console.log(e);
-              }}
-              //   defaultSize={"50%"}
-              onChange={(size) => {
-                map[before] = size;
-                localStorage.setItem("splitPos", JSON.stringify(map));
+                console.log((e.domElement as Element).className);
+                // e.domElement && e.domElement.class;
               }}
             >
-              {children?.map((child, index) => {
-                let temp = [...arr];
-                temp.push(index + 1);
-                return createLayout(child, temp, index);
-              })}
-            </SplitPane>
-          ) : (
-            // <div>{RenderComponent({ type: chart || "default" })}</div>
-            // <div style={{ width: "100%", height: "100%" }}>
-            <RenderComponent type={chart || "default"} data="data" />
-            // </div>
-          )
+            </ReflexElement>
 
-          //   <SplitPane split={split}>
-          //     {children.map((child, index) => {
-          //       return renderLayout(child);
-          //     })}
-          //   </SplitPane>
-        }
-        {/* {split ? (<div>1</div>) : (<div>2</div>)} */}
-      </div>
-    );
-  };
+            <ReflexSplitter />
 
-  const renderLayout = (data: LayoutData) => {
-    const { split, children, chart } = data;
-    return createLayout(data, [0]);
-    return (
-      <div>
-        {/* <SplitPane split={split}> */}
-        {/* {chart} */}
-        {createLayout(data, [0])}
-        {/* </SplitPane> */}
-      </div>
-    );
-  };
-  console.log(posData);
-  return (
-    <div style={{ width: "100%", height: "calc(100vh - 46px)" }}>
-      {renderLayout(posData)}
-      {/* <SplitPane split="horizontal"> */}
-      {/* <div>1</div>
-        <SplitPane split="horizontal">
-          <div>2</div>
-          <div>3</div>
-        </SplitPane> */}
-      {/* </SplitPane> */}
-      {/* <SplitPane split="vertical" minSize={50}>
-        <SplitPane split="horizontal">
-          <div>2</div>
-          <div>3</div>
-        </SplitPane>
-        <SplitPane split="vertical" minSize={50} defaultSize={100}>
-          <div>
-            <SplitPane split="horizontal">
-              <div>2</div>
-              <div>3</div>
-            </SplitPane>
+            <ReflexElement className="bottom-pane">
+              <div className="pane-content">
+                <label>Bottom Pane</label>
+              </div>
+            </ReflexElement>
+          </ReflexContainer>
+        </ReflexElement>
+
+        <ReflexSplitter />
+
+        <ReflexElement className="right-pane" flex={0.2}>
+          <div className="pane-content">
+            <label>Right Pane</label>
           </div>
-          <div>
-            <SplitPane split="vertical" minSize={50}>
-              <div />
-              <div />
-            </SplitPane>
-          </div>
-        </SplitPane>
-      </SplitPane> */}
+        </ReflexElement>
+      </ReflexContainer> */}
     </div>
   );
 };
 
-export default Dashboard;
+export default DashBoard;

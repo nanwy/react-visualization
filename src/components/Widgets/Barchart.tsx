@@ -8,7 +8,7 @@ import { CanvasRenderer } from "echarts/renderers";
 
 echarts.use([GridComponent, LineChart, CanvasRenderer]);
 
-function Chart() {
+function Chart(props: any) {
   const [count, setCount] = useState(Math.random());
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
@@ -31,7 +31,7 @@ function Chart() {
 
   useEffect(() => {
     chart && chart.resize();
-    console.log(chart, "chart");
+    console.log(chartRef, props, "chart");
   }, [width, height]);
 
   return <div ref={chartRef} style={{ width: "100%", height: "100%" }} />;

@@ -50,3 +50,12 @@
 .Resizer.disabled:hover {
   border-color: transparent;
 }
+
+.dashboard-container {
+  width: 100%;
+  height: calc(100vh - 46px);
+  ::-webkit-scrollbar {
+    width: 0 !important;
+    display: none;
+  }
+}

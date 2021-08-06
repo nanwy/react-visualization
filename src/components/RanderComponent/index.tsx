@@ -16,6 +16,7 @@ const components: ComponentTypes = {
 const RenderComponent = (props: {
   type: keyof ComponentTypes;
   data: string;
+  onResize: (e: any) => void;
 }) => {
   const Component = components[props.type];
   // return Component(props);
